@@ -68,13 +68,13 @@ function DatePicker({ selectedDate, onSelect }: { selectedDate: number | null; o
   }
 
   return (
-    <div className="bg-[#0a0a10] border border-[#1a1a2e] rounded-2xl p-6">
+    <div className="bg-[#0a0a0f] border border-[#1a1a25] rounded-2xl p-6">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={prevMonth} className="w-8 h-8 rounded-lg bg-[#12121a] border border-[#1a1a2e] text-[#71717a] hover:text-white hover:border-[#252538] transition-all flex items-center justify-center">
+        <button onClick={prevMonth} className="w-8 h-8 rounded-lg bg-[#0d0d14] border border-[#1a1a25] text-[#71717a] hover:text-white hover:border-[#2a2a3a] transition-all flex items-center justify-center">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
         </button>
         <span className="text-white font-semibold">{monthLabel}</span>
-        <button onClick={nextMonth} className="w-8 h-8 rounded-lg bg-[#12121a] border border-[#1a1a2e] text-[#71717a] hover:text-white hover:border-[#252538] transition-all flex items-center justify-center">
+        <button onClick={nextMonth} className="w-8 h-8 rounded-lg bg-[#0d0d14] border border-[#1a1a25] text-[#71717a] hover:text-white hover:border-[#2a2a3a] transition-all flex items-center justify-center">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
         </button>
       </div>
@@ -101,8 +101,8 @@ function DatePicker({ selectedDate, onSelect }: { selectedDate: number | null; o
               className={`
                 h-10 rounded-xl text-sm font-medium transition-all duration-200
                 ${!available ? 'text-[#27272a] cursor-not-allowed' : ''}
-                ${selected ? 'bg-gradient-to-br from-[#7c5cff] to-[#6b4ed9] text-white shadow-lg shadow-[#7c5cff]/30' : ''}
-                ${hovered && !selected ? 'bg-[#1a1a2e] text-white' : ''}
+                ${selected ? 'bg-gradient-to-br from-[#10b981] to-[#059669] text-white shadow-lg shadow-[#10b981]/30' : ''}
+                ${hovered && !selected ? 'bg-[#1a1a25] text-white' : ''}
                 ${available && !selected && !hovered ? 'text-[#a1a1aa] hover:text-white' : ''}
               `}
             >
@@ -112,12 +112,12 @@ function DatePicker({ selectedDate, onSelect }: { selectedDate: number | null; o
         })}
       </div>
 
-      <div className="flex items-center gap-5 mt-5 pt-5 border-t border-[#1a1a2e]">
+      <div className="flex items-center gap-5 mt-5 pt-5 border-t border-[#1a1a25]">
         <span className="flex items-center gap-2 text-xs text-[#71717a]">
-          <span className="w-3 h-3 rounded bg-gradient-to-br from-[#7c5cff] to-[#6b4ed9]" /> Selected
+          <span className="w-3 h-3 rounded bg-gradient-to-br from-[#10b981] to-[#059669]" /> Selected
         </span>
         <span className="flex items-center gap-2 text-xs text-[#71717a]">
-          <span className="w-3 h-3 rounded bg-[#1a1a2e]" /> Available
+          <span className="w-3 h-3 rounded bg-[#1a1a25]" /> Available
         </span>
       </div>
     </div>
@@ -133,6 +133,8 @@ export default function BookingPage() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
   const [mounted, setMounted] = useState(false)
+  const [guideEmail, setGuideEmail] = useState('')
+  const [guideStatus, setGuideStatus] = useState<'idle' | 'sent'>('idle')
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -178,21 +180,14 @@ export default function BookingPage() {
     }
   }
 
+  const handleGuideSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setGuideStatus('sent')
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
-
-  const testimonials = [
-    { name: 'Marcus Chen', role: 'Director', company: 'Perth Legal Partners', quote: "The discovery call alone was worth it — we identified three automation opportunities we'd been ignoring for months." },
-    { name: 'Sarah O\'Brien', role: 'Practice Manager', company: 'Mount Lawley Physio', quote: "EMVY's team understood healthcare compliance constraints that previous agencies completely missed. That's rare." },
-    { name: 'James Kumar', role: 'Founder', company: 'Kumar Accounting', quote: "Booked the call expecting a pitch. Got a genuine audit of our workflows. Walked away with actionable steps same day." },
-  ]
-
-  const stats = [
-    { value: '$1.5K', label: 'Audit Investment' },
-    { value: '48hr', label: 'Delivery' },
-    { value: '94%', label: 'Client Retention' },
-  ]
 
   return (
     <div className="min-h-screen relative">
@@ -206,10 +201,10 @@ export default function BookingPage() {
       {/* Content */}
       <div className="relative z-10">
         {/* Header */}
-        <header className="border-b border-[#1a1a2e]/50 py-5 px-6 backdrop-blur-sm bg-[#030307]/50 sticky top-0 z-50">
+        <header className="border-b border-[#1a1a25]/50 py-5 px-6 backdrop-blur-sm bg-[#030307]/50 sticky top-0 z-50">
           <div className="max-w-6xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7c5cff] to-[#6b4ed9] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#10b981] to-[#059669] flex items-center justify-center">
                 <span className="text-white font-bold text-lg">E</span>
               </div>
               <div>
@@ -217,73 +212,255 @@ export default function BookingPage() {
                 <span className="hidden sm:inline text-xs text-[#71717a] ml-2">AI Audit Agency</span>
               </div>
             </div>
-            <a href="mailto:hello@emvy.ai" className="text-sm text-[#a1a1aa] hover:text-white transition-colors flex items-center gap-2">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-              <span className="hidden sm:inline">hello@emvy.ai</span>
-            </a>
+            <nav className="flex items-center gap-6">
+              <a href="#process" className="text-sm text-[#a1a1aa] hover:text-white transition-colors hidden sm:block">Process</a>
+              <a href="#cases" className="text-sm text-[#a1a1aa] hover:text-white transition-colors hidden sm:block">Case Studies</a>
+              <a href="#book" className="text-sm bg-gradient-to-r from-[#10b981] to-[#059669] text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg hover:shadow-[#10b981]/20 transition-all">Book a Call</a>
+            </nav>
           </div>
         </header>
 
         <main className="max-w-6xl mx-auto px-6 py-12 md:py-20">
-          {/* Hero */}
+
+          {/* HERO */}
           <div className={`text-center mb-20 ${mounted ? 'animate-slide-up' : 'opacity-0'}`}>
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#7c5cff]/10 border border-[#7c5cff]/20 text-[#a78bfa] text-sm font-medium mb-8">
-              <span className="w-2 h-2 rounded-full bg-[#7c5cff] animate-pulse" />
-              Free · 15 Minutes · No Commitment
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#10b981]/10 border border-[#10b981]/20 text-[#34d399] text-sm font-medium mb-8">
+              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
+              Perth's AI Audit Agency
             </div>
 
-            {/* Headline */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-[1.1] tracking-tight">
-              Book Your Free
+              We Audit Your Business.
               <br />
-              <span className="gradient-text">AI Discovery Call</span>
+              <span className="gradient-text">Then We Build the AI.</span>
             </h1>
 
-            {/* Subheadline */}
             <p className="text-lg md:text-xl text-[#a1a1aa] max-w-2xl mx-auto mb-10 leading-relaxed">
-              See exactly where AI can transform your business. We diagnose the gaps, reveal the quick wins, and show you exactly what an EMVY audit covers.
+              Service businesses in Perth are losing 8-15 hours a week to admin tasks a bot could handle. 
+              We find those gaps. We build the automation. We support it.
             </p>
 
-            {/* Trust indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-[#71717a]">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a href="#book" className="btn-primary text-lg px-8 py-4">
+                <span>Book Free Discovery Call</span>
+              </a>
+              <a href="#prompts" className="text-[#a1a1aa] hover:text-white transition-colors flex items-center gap-2 text-sm">
+                Get 50 Free AI Agent Prompts
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </a>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-[#71717a] mt-8">
               <span className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                <svg className="w-5 h-5 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 No sales pitch
               </span>
               <span className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                Actionable insights
+                <svg className="w-5 h-5 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                Actionable audit
               </span>
               <span className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                Perth-based team
+                <svg className="w-5 h-5 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                Perth-based
               </span>
             </div>
           </div>
 
-          {/* Stats bar */}
-          <div className={`grid grid-cols-3 gap-4 max-w-xl mx-auto mb-20 ${mounted ? 'animate-slide-up stagger-1' : 'opacity-0'}`}>
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center p-4 rounded-2xl bg-[#0d0d14]/50 border border-[#1a1a2e] backdrop-blur-sm">
-                <div className="text-2xl md:text-3xl font-bold gradient-text mb-1">{stat.value}</div>
-                <div className="text-xs text-[#71717a]">{stat.label}</div>
-              </div>
-            ))}
+          {/* THE PROBLEM */}
+          <div className={`mb-20 ${mounted ? 'animate-slide-up stagger-1' : 'opacity-0'}`}>
+            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              {[
+                { stat: '8hrs', label: 'per week', desc: 'the average service business owner spends on admin tasks that could be automated' },
+                { stat: '23%', label: 'of calls', desc: 'are booking enquiries that a bot could handle before they reach your staff' },
+                { stat: '$12K', label: 'per year', desc: 'the hidden cost of missed calls, slow follow-ups, and manual admin at a 5-person service business' },
+              ].map((item, i) => (
+                <div key={i} className="text-center p-8 rounded-2xl bg-[#0d0d14]/50 border border-[#1a1a25] backdrop-blur-sm">
+                  <div className="text-5xl md:text-6xl font-bold gradient-text mb-2">{item.stat}</div>
+                  <div className="text-[#71717a] text-sm font-medium mb-3">{item.label}</div>
+                  <p className="text-[#a1a1aa] text-sm leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* What to expect */}
+          {/* HOW IT WORKS */}
+          <div id="process" className={`mb-20 ${mounted ? 'animate-slide-up stagger-2' : 'opacity-0'}`}>
+            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">The EMVY Process</h2>
+            <p className="text-[#a1a1aa] text-center max-w-xl mx-auto mb-12">Three stages. Each one pays for itself.</p>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  step: '01',
+                  title: 'AI Audit',
+                  price: '$1,500',
+                  timeframe: '1-2 weeks',
+                  desc: 'We map your current workflows, identify automation opportunities, and deliver a prioritized roadmap. You know exactly what to automate first — and why.',
+                  bullets: ['Workflow mapping', 'AI opportunity audit', 'ROI analysis', 'Prioritized action plan'],
+                  cta: 'Start with an audit',
+                },
+                {
+                  step: '02',
+                  title: 'AI Build',
+                  price: '$3,000-$5,000',
+                  timeframe: '2-4 weeks',
+                  desc: 'We build the AI agents and automations from your audit. Phone answering, booking, follow-ups, admin — whatever the audit identified.',
+                  bullets: ['Custom AI agents', 'System integration', 'Staff training', 'Documentation'],
+                  cta: 'After your audit',
+                  highlight: true,
+                },
+                {
+                  step: '03',
+                  title: 'AI Retainer',
+                  price: '$1,500/mo',
+                  timeframe: 'Ongoing',
+                  desc: 'We monitor, optimize, and add new automation as your business grows. Your AI systems stay sharp.',
+                  bullets: ['Monthly optimization', 'New automation builds', 'Priority support', 'Quarterly reviews'],
+                  cta: 'Post-build only',
+                },
+              ].map((item, i) => (
+                <div key={i} className={`relative p-8 rounded-2xl border backdrop-blur-sm ${item.highlight ? 'bg-[#0d0d14]/80 border-[#10b981]/40 glow' : 'bg-[#0d0d14]/50 border-[#1a1a25]'}`}>
+                  {item.highlight && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#10b981] text-white text-xs font-bold rounded-full">
+                      MOST POPULAR
+                    </div>
+                  )}
+                  <div className="text-5xl font-bold text-[#1a1a25] group-hover:text-[#10b981]/20 mb-4">{item.step}</div>
+                  <div className="flex items-end gap-3 mb-2">
+                    <h3 className="text-xl font-bold text-white">{item.title}</h3>
+                  </div>
+                  <div className="flex items-baseline gap-2 mb-4">
+                    <span className="text-2xl font-bold gradient-text">{item.price}</span>
+                    <span className="text-[#71717a] text-sm">— {item.timeframe}</span>
+                  </div>
+                  <p className="text-[#a1a1aa] text-sm leading-relaxed mb-6">{item.desc}</p>
+                  <ul className="space-y-2 mb-6">
+                    {item.bullets.map((b, j) => (
+                      <li key={j} className="flex items-center gap-2 text-sm text-[#a1a1aa]">
+                        <svg className="w-4 h-4 text-[#10b981] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="#book" className={`block text-center text-sm font-medium py-3 px-4 rounded-xl transition-all ${item.highlight ? 'bg-gradient-to-r from-[#10b981] to-[#059669] text-white hover:shadow-lg hover:shadow-[#10b981]/20' : 'bg-[#1a1a25] text-[#a1a1aa] hover:text-white hover:bg-[#2a2a3a]'}`}>
+                    {item.cta}
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CASE STUDIES */}
+          <div id="cases" className={`mb-20 ${mounted ? 'animate-slide-up stagger-3' : 'opacity-0'}`}>
+            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">Results We've Delivered</h2>
+            <p className="text-[#a1a1aa] text-center max-w-xl mx-auto mb-12">Real outcomes from real Perth businesses.</p>
+
+            <div className="space-y-6 max-w-3xl mx-auto">
+              {[
+                {
+                  industry: 'Physiotherapy Clinic',
+                  before: 'Front desk spending 3 hours/day on phone booking calls. Constant no-shows. Staff frustrated.',
+                  after: 'AI receptionist handles 80% of booking calls. No-show rate dropped 40%. Front desk focuses on patient care.',
+                  metric: '3hrs saved/day',
+                },
+                {
+                  industry: 'Tradie Electrical Business',
+                  before: 'Owner managing 6 tradies via WhatsApp and phone. Job quotes taking 2 days. Customer follow-up falling through.',
+                  after: 'AI quotes jobs in 4 hours (not 2 days). Automated SMS reminders. Job tracking via AI agent. Owner focuses on field work.',
+                  metric: '2 days → 4hrs on quotes',
+                },
+                {
+                  industry: 'Medical Practice',
+                  before: 'NDIS patients requiring extensive phone intake. Multi-practitioner scheduling chaos. High admin turnover.',
+                  after: 'AI intake chatbot collects patient history before appointment. Scheduling coordinated across 4 practitioners. Admin load cut in half.',
+                  metric: '50% less admin',
+                },
+              ].map((item, i) => (
+                <div key={i} className="p-6 md:p-8 rounded-2xl bg-[#0d0d14]/50 border border-[#1a1a25]">
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div>
+                      <div className="text-xs text-[#10b981] font-medium uppercase tracking-wider mb-1">{item.industry}</div>
+                      <div className="text-2xl font-bold gradient-text">{item.metric}</div>
+                    </div>
+                    <div className="flex-shrink-0 px-3 py-1 rounded-full bg-[#10b981]/10 border border-[#10b981]/20 text-[#10b981] text-xs font-medium">
+                      Audit → Build
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <div className="text-xs text-[#71717a] font-medium mb-2 flex items-center gap-1">
+                        <svg className="w-3 h-3 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                        BEFORE
+                      </div>
+                      <p className="text-[#a1a1aa] text-sm">{item.before}</p>
+                    </div>
+                    <div>
+                      <div className="text-xs text-[#71717a] font-medium mb-2 flex items-center gap-1">
+                        <svg className="w-3 h-3 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                        AFTER
+                      </div>
+                      <p className="text-[#d4d4d8] text-sm">{item.after}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* FREE AI PROMPTS LEAD MAGNET */}
+          <div id="prompts" className={`mb-20 ${mounted ? 'animate-slide-up stagger-4' : 'opacity-0'}`}>
+            <div className="gradient-border p-8 md:p-12 text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#10b981]/10 border border-[#10b981]/20 text-[#34d399] text-sm font-medium mb-6">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" /></svg>
+                Free Download
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                50 AI Agent Prompts
+              </h2>
+              <p className="text-[#a1a1aa] max-w-lg mx-auto mb-8">
+                Real prompts used by EMVY operators daily. Research agents, outreach agents, content agents, operations agents. Copy and use immediately.
+              </p>
+
+              {guideStatus === 'sent' ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 rounded-full bg-[#10b981]/10 border border-[#10b981]/30 flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  </div>
+                  <p className="text-white font-semibold text-lg mb-2">Check your email!</p>
+                  <p className="text-[#71717a] text-sm">Your 50 AI Agent Prompts are on the way to {guideEmail}.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleGuideSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                  <input
+                    type="email"
+                    required
+                    value={guideEmail}
+                    onChange={e => setGuideEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    className="input-field flex-1"
+                  />
+                  <button type="submit" className="btn-primary whitespace-nowrap">
+                    <span>Get Free Prompts</span>
+                  </button>
+                </form>
+              )}
+
+              <p className="text-[#71717a] text-xs mt-4">No spam. Unsubscribe anytime. 50 working prompts, nothing else.</p>
+            </div>
+          </div>
+
+          {/* WHAT HAPPENS ON THE CALL */}
           <div className={`mb-20 ${mounted ? 'animate-slide-up stagger-2' : 'opacity-0'}`}>
-            <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-10">What Happens on the Call</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-10">What Happens on the Discovery Call</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { num: '01', title: 'Map Your AI Gaps', desc: "We'll identify where AI can eliminate bottlenecks in your business right now." },
+                { num: '01', title: 'Map Your AI Gaps', desc: "We identify where AI can eliminate bottlenecks in your business right now." },
                 { num: '02', title: 'Quick Wins', desc: 'Leave the call with at least 1 actionable AI strategy you can implement immediately.' },
                 { num: '03', title: 'Audit Breakdown', desc: "Understand exactly what a $1,500 EMVY audit covers — and what it doesn't." },
                 { num: '04', title: 'Honest Assessment', desc: "If we're not a fit, we'll tell you and point you somewhere useful." },
               ].map((item, i) => (
-                <div key={i} className="group p-6 rounded-2xl bg-[#0d0d14]/50 border border-[#1a1a2e] backdrop-blur-sm card-hover">
-                  <div className="text-4xl font-bold text-[#1a1a2e] group-hover:text-[#7c5cff]/20 transition-colors mb-4">{item.num}</div>
+                <div key={i} className="group p-6 rounded-2xl bg-[#0d0d14]/50 border border-[#1a1a25] card-hover">
+                  <div className="text-4xl font-bold text-[#1a1a25] group-hover:text-[#10b981]/20 transition-colors mb-4">{item.num}</div>
                   <h3 className="text-white font-semibold mb-2">{item.title}</h3>
                   <p className="text-[#71717a] text-sm leading-relaxed">{item.desc}</p>
                 </div>
@@ -291,44 +468,23 @@ export default function BookingPage() {
             </div>
           </div>
 
-          {/* Testimonials */}
-          <div className={`mb-20 ${mounted ? 'animate-slide-up stagger-3' : 'opacity-0'}`}>
-            <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-10">What Clients Say</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {testimonials.map((t, i) => (
-                <div key={i} className="p-6 rounded-2xl bg-[#0d0d14]/50 border border-[#1a1a2e] backdrop-blur-sm card-hover">
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(5)].map((_, j) => (
-                      <svg key={j} className="w-4 h-4 text-[#fbbf24]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                    ))}
-                  </div>
-                  <p className="text-[#d4d4d8] mb-4 leading-relaxed">"{t.quote}"</p>
-                  <div>
-                    <div className="text-white font-medium text-sm">{t.name}</div>
-                    <div className="text-[#71717a] text-xs">{t.role}, {t.company}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Booking Form Section */}
-          <div className={`${mounted ? 'animate-slide-up stagger-4' : 'opacity-0'}`} id="book">
+          {/* BOOKING FORM */}
+          <div id="book" className={`${mounted ? 'animate-slide-up stagger-4' : 'opacity-0'}`}>
             <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Discover Your AI Opportunities?</h2>
-              <p className="text-[#a1a1aa]">Fill in your details and pick a time that works for you.</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Book Your Free Discovery Call</h2>
+              <p className="text-[#a1a1aa]">15 minutes. No pitch. Just an honest look at where AI could help your business.</p>
             </div>
 
             <div className="max-w-4xl mx-auto">
               <div className="gradient-border p-8 md:p-10 glow">
                 {status === 'success' ? (
                   <div className="text-center py-12 animate-fade-in">
-                    <div className="w-20 h-20 rounded-full bg-[#22c55e]/10 border border-[#22c55e]/30 flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-[#22c55e]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                    <div className="w-20 h-20 rounded-full bg-[#10b981]/10 border border-[#10b981]/30 flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                     </div>
                     <h2 className="text-3xl font-bold text-white mb-3">You're Booked!</h2>
                     <p className="text-[#a1a1aa] text-lg mb-6">{message}</p>
-                    <button onClick={() => setStatus('idle')} className="text-[#7c5cff] hover:text-[#9d85ff] transition-colors text-sm">
+                    <button onClick={() => setStatus('idle')} className="text-[#10b981] hover:text-[#34d399] transition-colors text-sm">
                       ← Book another call
                     </button>
                   </div>
@@ -362,9 +518,9 @@ export default function BookingPage() {
                         <DatePicker selectedDate={selectedDate} onSelect={handleDateSelect} />
                         <div>
                           {selectedDate ? (
-                            <div className="bg-[#0a0a10] border border-[#1a1a2e] rounded-2xl p-6 h-full">
+                            <div className="bg-[#0a0a0f] border border-[#1a1a25] rounded-2xl p-6 h-full">
                               <p className="text-white font-semibold mb-4 flex items-center gap-2">
-                                <svg className="w-5 h-5 text-[#7c5cff]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                <svg className="w-5 h-5 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                 {formatDate(selectedDate, selectedMonth, selectedYear)}
                               </p>
                               <div className="grid grid-cols-2 gap-2">
@@ -376,8 +532,8 @@ export default function BookingPage() {
                                     className={`
                                       py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200
                                       ${selectedSlot === slot
-                                        ? 'bg-gradient-to-br from-[#7c5cff] to-[#6b4ed9] text-white shadow-lg shadow-[#7c5cff]/30'
-                                        : 'bg-[#12121a] border border-[#1a1a2e] text-[#a1a1aa] hover:text-white hover:border-[#252538]'}
+                                        ? 'bg-gradient-to-br from-[#10b981] to-[#059669] text-white shadow-lg shadow-[#10b981]/30'
+                                        : 'bg-[#0d0d14] border border-[#1a1a25] text-[#a1a1aa] hover:text-white hover:border-[#2a2a3a]'}
                                     `}
                                   >
                                     {slot}
@@ -385,8 +541,8 @@ export default function BookingPage() {
                                 ))}
                               </div>
                               {selectedSlot && (
-                                <div className="mt-4 p-3 rounded-xl bg-[#7c5cff]/10 border border-[#7c5cff]/20">
-                                  <p className="text-[#a78bfa] text-sm font-medium flex items-center gap-2">
+                                <div className="mt-4 p-3 rounded-xl bg-[#10b981]/10 border border-[#10b981]/20">
+                                  <p className="text-[#34d399] text-sm font-medium flex items-center gap-2">
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                                     {selectedSlot} AWST selected
                                   </p>
@@ -394,7 +550,7 @@ export default function BookingPage() {
                               )}
                             </div>
                           ) : (
-                            <div className="bg-[#0a0a10] border border-[#1a1a2e] rounded-2xl p-6 h-full flex flex-col items-center justify-center text-center">
+                            <div className="bg-[#0a0a0f] border border-[#1a1a25] rounded-2xl p-6 h-full flex flex-col items-center justify-center text-center">
                               <svg className="w-12 h-12 text-[#27272a] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                               <p className="text-[#52525b] text-sm">Select a date to see<br />available times</p>
                             </div>
@@ -428,7 +584,7 @@ export default function BookingPage() {
           <div className={`text-center mt-12 ${mounted ? 'animate-slide-up stagger-5' : 'opacity-0'}`}>
             <p className="text-[#71717a]">
               Prefer to email directly?{' '}
-              <a href="mailto:hello@emvy.ai" className="text-[#a78bfa] hover:text-white transition-colors font-medium">
+              <a href="mailto:hello@emvy.ai" className="text-[#34d399] hover:text-white transition-colors font-medium">
                 hello@emvy.ai
               </a>
             </p>
@@ -436,11 +592,11 @@ export default function BookingPage() {
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-[#1a1a2e]/50 py-10 px-6 backdrop-blur-sm bg-[#030307]/50">
+        <footer className="border-t border-[#1a1a25]/50 py-10 px-6 backdrop-blur-sm bg-[#030307]/50">
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7c5cff] to-[#6b4ed9] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#10b981] to-[#059669] flex items-center justify-center">
                   <span className="text-white font-bold text-sm">E</span>
                 </div>
                 <span className="text-white font-semibold">EMVY</span>
@@ -452,8 +608,8 @@ export default function BookingPage() {
                 <span>Perth, Australia</span>
               </div>
             </div>
-            <div className="mt-8 pt-6 border-t border-[#1a1a2e]/50 text-center text-xs text-[#52525b]">
-              © {new Date().getFullYear()} EMVY. All rights reserved.
+            <div className="mt-8 pt-6 border-t border-[#1a1a25]/50 text-center text-xs text-[#52525b]">
+              © {new Date().getFullYear()} EMVY. All rights reserved. — Shut Up and Build
             </div>
           </div>
         </footer>
