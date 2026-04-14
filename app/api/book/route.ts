@@ -5,7 +5,7 @@ import { join } from 'path'
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, email, company, goal, preferredTime, submittedAt } = body
+    const { name, email, company, goal, date, time, timezone, submittedAt } = body
 
     if (!name || !email || !goal) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'You have already booked a call' }, { status: 200 })
     }
 
-    bookings.push({ name, email, company, goal, preferredTime, submittedAt })
+    bookings.push({ name, email, company, goal, date, time, timezone, submittedAt })
     writeFileSync(filePath, JSON.stringify(bookings, null, 2))
 
     return NextResponse.json({ success: true, message: 'Booking received' })
