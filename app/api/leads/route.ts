@@ -4,7 +4,7 @@ const ELASTIC_API_KEY = process.env.ELASTIC_API_KEY || '93F6F43BA64B92C176FB3AF4
 const ELASTIC_API_URL = 'https://api.elasticemail.com/v2/email/send'
 
 async function sendEmail(to: string, subject: string, bodyText: string, bodyHtml: string) {
-  const params = new URLSearchParams({
+  const body = new URLSearchParams({
     apiKey: ELASTIC_API_KEY,
     from: 'dawnlabsai@gmail.com',
     fromName: 'EMVY — Shut Up and Build',
@@ -14,8 +14,10 @@ async function sendEmail(to: string, subject: string, bodyText: string, bodyHtml
     body_html: bodyHtml,
   })
 
-  const res = await fetch(`${ELASTIC_API_URL}?${params.toString()}`, {
+  const res = await fetch(ELASTIC_API_URL, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body.toString(),
   })
 
   const data = await res.json()
