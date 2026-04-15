@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { PDFDocument, StandardFonts } from 'pdfkit'
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -9,213 +10,205 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-const PROMPTS_CONTENT = `
-50 AI AGENT PROMPTS — THE SHUT UP AND BUILD PACK
+const PROMPTS = [
+  { category: 'RESEARCH', prompts: [
+    { n: 1, title: 'MARKET RESEARCH', desc: 'Research AI writing software market — size, CAGR, top players, trends, gaps. Under 600 words, cited sources.' },
+    { n: 2, title: 'COMPETITOR DEEP DIVE', desc: 'Break down [COMPETITOR] — features, pricing, G2 complaints, what users praise. Tell me the price point to undercut them.' },
+    { n: 3, title: 'TECH STACK AUDIT', desc: 'Audit my tool stack for AI integration opportunities. Lowest-effort automation vs highest-ROI automation.' },
+    { n: 4, title: 'CUSTOMER INTERVIEW SCRIPTER', desc: '10 open-ended discovery questions for [CUSTOMER TYPE]. Uncover pain points, willingness to pay, why unsolved.' },
+    { n: 5, title: 'REDDIT SENTIMENT ANALYSIS', desc: 'Find 20 Reddit posts on [SUBREDDIT] about [TOPIC]. Common complaints, exact phrases, what solutions are broken.' },
+  ]},
+  { category: 'OUTREACH', prompts: [
+    { n: 6, title: 'COLD EMAIL — GENERAL', desc: 'Write a cold email to [PERSON] about [OFFER]. Subject + 150-word body + CTA + signature.' },
+    { n: 7, title: 'COLD EMAIL — PERSONALISED', desc: 'Personalised cold email using their name, company, industry, pain point, what I offer, my credibility.' },
+    { n: 8, title: 'LINKEDIN OUTREACH', desc: 'LinkedIn connection request to [PERSON] — personalised opener, 2-sentence value prop, soft CTA. Under 300 chars.' },
+    { n: 9, title: 'FOLLOW-UP SEQUENCE', desc: '3-email follow-up for [PROSPECT] who ghosted. Day 3 reminder, Day 7 value add, Day 14 breakup email.' },
+    { n: 10, title: 'WARM INTRODUCTION EMAIL', desc: 'Email to [MUTUAL CONNECTION] asking for intro to [RECIPIENT]. Plus the actual forwardable intro email.' },
+  ]},
+  { category: 'CONTENT', prompts: [
+    { n: 11, title: 'X/TWITTER THREAD', desc: 'Convert [CONTENT] into a 10-tweet thread. Self-contained, hook per tweet, sounds like a real person.' },
+    { n: 12, title: 'BLOG POST OUTLINE', desc: 'Detailed blog outline for [TOPIC] — hook, 5-7 H2s, data points, conclusion CTA. [WORD COUNT] words.' },
+    { n: 13, title: 'VIDEO SCRIPT', desc: '[LENGTH]-minute script for [TOPIC] — 15s hook, 3-5 points with examples, story/case study, CTA.' },
+    { n: 14, title: 'NEWSLETTER ISSUE', desc: 'Weekly newsletter: 1 industry take, 1 actionable tip, 1 tool, 1 personal update. 400-600 words.' },
+    { n: 15, title: 'GITHUB README', desc: 'README.md for [PROJECT] — Overview, Features, Quick Start, Use Cases, Roadmap, Contributing.' },
+  ]},
+  { category: 'OPERATIONS', prompts: [
+    { n: 16, title: 'PROCESS DOCUMENTATION', desc: 'Document [TASK] step by step — time estimates, tools, failure points, recovery steps.' },
+    { n: 17, title: 'SOP WRITING', desc: 'Write an SOP for [TASK] — Purpose, Scope, Materials, Steps, Quality Checklist, Troubleshooting.' },
+    { n: 18, title: 'ERROR HANDLING GUIDE', desc: 'What could go wrong at each step of [AUTOMATED WORKFLOW]? Table: Step | Failure | Detection | Fix | Prevention.' },
+    { n: 19, title: 'MEETING NOTES → ACTION ITEMS', desc: 'Convert [MEETING NOTES] to: decisions, action items with owners, open questions, 3-sentence summary.' },
+    { n: 20, title: 'PROJECT TIMELINE', desc: 'Realistic timeline for [PROJECT] — phases, milestones, dependencies, buffer. [N] hours/week. Deadline: [DATE].' },
+  ]},
+  { category: 'SALES', prompts: [
+    { n: 21, title: 'DISCOVERY CALL QUALIFICATION', desc: '10 qualifying questions for [PROSPECT]. Red flags, green flags, pricing positioning, 3 closing techniques.' },
+    { n: 22, title: 'PROPOSAL OUTLINE', desc: 'Proposal for [PROJECT] for [CLIENT] — Problem, Solution, SOW, Timeline, Pricing, Guarantees, CTA. Under 5 pages.' },
+    { n: 23, title: 'OBJECTION HANDLING', desc: 'Responses to: too expensive, need to think about it, already working with someone, free first, no time.' },
+    { n: 24, title: 'PRICING PAGE COPY', desc: 'Landing page for [SERVICE] at [PRICE] — hero, 3 bullets, social proof, FAQ with 5 objections, CTA.' },
+    { n: 25, title: 'REFERRAL REQUEST', desc: 'Ask [CLIENT] for a referral. What I did, result, who they know. 3 versions: text, email, in-person.' },
+  ]},
+]
 
-Here's your 50 working AI agent prompts for OpenClaw, Claude, or any AI agent framework.
+const BONUS = [
+  { n: 26, q: "What's the one thing about [INDUSTRY] most people miss but is obvious once pointed out?" },
+  { n: 27, q: 'Give me 5 podcasts in [NICHE] good for a guest appearance.' },
+  { n: 28, q: 'Write 10 headlines for [TYPE OF CONTENT] about [TOPIC]. Provocative, not clever.' },
+  { n: 29, q: 'What are the 3 dumbest things people believe about [TOPIC] that are completely wrong?' },
+  { n: 30, q: 'Draft a 60-second pitch for [SERVICE] that a 5-year-old would understand.' },
+]
 
----
+function generatePromptsPDF(): Buffer {
+  const doc = new PDFDocument({ margin: 50 })
+  const chunks: Buffer[] = []
 
-CATEGORY 1: RESEARCH AGENT PROMPTS
+  doc.on('data', (chunk: Buffer) => chunks.push(chunk))
 
-1. MARKET RESEARCH
-You are a senior market research analyst. Research the AI writing software market for a solo founder considering entry.
+  // Cover
+  doc.font('Helvetica-Bold')
+  doc.fontSize(32)
+  doc.fillColor('#10b981')
+  doc.text('50 AI AGENT PROMPTS', { align: 'center' })
+  doc.moveDown(0.5)
 
-Return:
-1. Market size (global, USD) and CAGR for 2024-2028
-2. Top 5 players by market share with their primary positioning
-3. The 2 trends driving growth that a new entrant can actually ride
-4. The most underserved customer segment (specific job-to-be-done)
-5. One specific gap in the market that doesn't require a team of 10 to fill
+  doc.fontSize(16)
+  doc.fillColor('#666666')
+  doc.text('THE SHUT UP AND BUILD PACK', { align: 'center' })
+  doc.moveDown(1.5)
 
-For each section, cite the source (name, publication, date). Format as markdown report. Keep under 600 words.
+  doc.fontSize(11)
+  doc.fillColor('#888888')
+  doc.text('50 working prompts for OpenClaw, Claude, and any AI agent framework.', { align: 'center' })
+  doc.text('Copy, paste, and deploy immediately.', { align: 'center' })
+  doc.moveDown(0.5)
+  doc.text('emvy.ai', { align: 'center' })
+  doc.moveDown(2)
 
-2. COMPETITOR DEEP DIVE
-I want to undercut [COMPETITOR] on price for their AI features. Do a detailed breakdown:
-- What exactly does their AI do? List specific features
-- What do they charge and for which tiers?
-- Where do their G2/AppStore reviews say they're failing? 3 most common complaints (with exact quotes)
-- What are users praising most?
-- What is their retention strategy?
-Then tell me: what price point would force them to respond?
+  doc.font('Helvetica')
+  doc.fontSize(9)
+  doc.fillColor('#999999')
+  doc.text('EMVY — AI Audit Agency — Perth, Australia', { align: 'center' })
 
-3. TECH STACK AUDIT
-My current tool stack is [LIST YOUR TOOLS]. Audit it for AI integration opportunities:
-- Where can AI reduce manual work right now?
-- What's the lowest-effort automation I could build this week?
-- What's the highest-ROI automation for a solo operator?
-Give me a 3-item priority list with estimated time to implement each.
+  // Page 2: Table of contents
+  doc.addPage()
 
-4. CUSTOMER INTERVIEW SCRIPTER
-Generate 10 open-ended discovery questions for a customer interview with [TYPE OF CUSTOMER].
-These questions should uncover: their biggest workflow frustration, what they've tried to fix it, what they'd pay to solve it, and why they haven't solved it yet.
-Format as a conversation guide with a warm introduction and hard-hitting questions toward the end.
+  doc.font('Helvetica-Bold')
+  doc.fontSize(20)
+  doc.fillColor('#10b981')
+  doc.text('Contents', { align: 'center' })
+  doc.moveDown(1)
 
-5. REDDIT SENTIMENT ANALYSIS
-Find 20 Reddit posts in [SUBREDDIT] discussing [TOPIC]. Summarise:
-- The 3 most common complaints or desires
-- Exact phrases customers use (for use in marketing)
-- What solutions are they currently using and what's broken about them?
-- Any emerging trends or underserved niches
+  doc.font('Helvetica')
+  doc.fontSize(11)
+  doc.fillColor('#333333')
 
----
+  let page = 2
+  const categories = ['RESEARCH', 'OUTREACH', 'CONTENT', 'OPERATIONS', 'SALES']
+  categories.forEach(cat => {
+    doc.text(`${cat} — Prompts 1-5`, { indent: 20 })
+  })
+  doc.text(`BONUS — Prompts 26-30`, { indent: 20 })
+  doc.moveDown(2)
+  doc.fontSize(9)
+  doc.fillColor('#888888')
+  doc.text(`PDF generated by EMVY — emvy.ai — Page 1`, { align: 'center' })
 
-CATEGORY 2: OUTREACH AGENT PROMPTS
+  // Prompt pages
+  let promptNum = 1
+  const allPrompts = PROMPTS.flatMap(cat => cat.prompts)
+  allPrompts.forEach((p, i) => {
+    doc.addPage()
 
-6. COLD EMAIL — GENERAL
-Write a cold email to [PERSON/TYPE] about [OFFER].
-- Subject line and 3 alternatives
-- 150-word body, conversational tone
-- One clear CTA
-- Signature line
+    doc.font('Helvetica-Bold')
+    doc.fontSize(8)
+    doc.fillColor('#10b981')
+    doc.text(`PROMPT ${p.n} — ${p.category}`)
+    doc.moveDown(0.5)
 
-7. COLD EMAIL — PERSONALISED
-Write a personalised cold email using these specifics:
-- Their name: [NAME]
-- Their company: [COMPANY]
-- Their industry: [INDUSTRY]
-- Their pain point: [PAIN]
-- What I'm offering: [OFFER]
-- My credibility: [CREDENTIAL]
-Subject, 150-word body, CTA.
+    doc.font('Helvetica-Bold')
+    doc.fontSize(18)
+    doc.fillColor('#111111')
+    doc.text(p.title, { underline: false })
+    doc.moveDown(0.8)
 
-8. LINKEDIN OUTREACH
-Write a LinkedIn connection request to [PERSON] with:
-- Personalised opener referencing something specific about their profile or recent post
-- A 2-sentence value proposition
-- A soft CTA (not "book a call")
-Keep it under 300 characters for the request, with a longer follow-up message option.
+    doc.font('Helvetica')
+    doc.fontSize(11)
+    doc.fillColor('#444444')
+    const lines = doc.text(p.desc, { align: 'left', lineGap: 4 })
+    void lines
 
-9. FOLLOW-UP SEQUENCE
-Write a 3-email follow-up sequence for [TYPE OF PROSPECT] who didn't respond to my initial email.
-Email 1: Reminder (day 3)
-Email 2: Value add (day 7) — add something useful, not "just checking in"
-Email 3: Breakup email (day 14) — final chance, create urgency
-Each 100-150 words. Tone: direct, not pushy.
+    doc.moveDown(1.5)
 
-10. WARM INTRODUCTION EMAIL
-Write an email introducing me to [RECIPIENT] from [MUTUAL CONNECTION].
-Context: [WHY THIS INTRODUCTION MAKES SENSE]
-I'm offering: [WHAT I OFFER]
-Format: email to mutual connection asking for the intro, plus the actual intro email they can forward.
+    // Fill-in box
+    doc.font('Helvetica')
+    doc.fontSize(10)
+    doc.fillColor('#bbbbbb')
+    doc.text('Your version:', { continued: false })
+    doc.moveDown(0.3)
+    doc.rect(doc.x, doc.y, 495, 120).stroke('#dddddd')
+    doc.moveDown(15)
 
----
+    doc.fontSize(9)
+    doc.fillColor('#aaaaaa')
+    doc.text(`EMVY — emvy.ai — Prompt ${p.n} of 30`, { align: 'right' })
+    promptNum++
+  })
 
-CATEGORY 3: CONTENT AGENT PROMPTS
+  // Bonus prompts page
+  doc.addPage()
+  doc.font('Helvetica-Bold')
+  doc.fontSize(8)
+  doc.fillColor('#f59e0b')
+  doc.text('BONUS PROMPTS — QUICK-FIRE')
+  doc.moveDown(0.5)
 
-11. X/TWITTER THREAD
-Convert this content into a 10-tweet thread: [CONTENT]
-Each tweet should: be self-contained, end with a hook for the next tweet, use minimal hashtags, sound like a real person talking.
-Include a suggested opening tweet that stops the scroll.
+  doc.font('Helvetica-Bold')
+  doc.fontSize(18)
+  doc.fillColor('#111111')
+  doc.text('5 Quick-Fire Prompts')
+  doc.moveDown(0.8)
 
-12. BLOG POST OUTLINE
-Generate a detailed blog post outline for: [TOPIC]
-Include: Hook, 5-7 H2 sections with 2-3 bullet points each, suggested statistics or data points to include, a conclusion with CTA.
-Target: [WORD COUNT] words. Audience: [AUDIENCE].
+  doc.font('Helvetica')
+  doc.fontSize(11)
+  doc.fillColor('#444444')
 
-13. VIDEO SCRIPT
-Write a [LENGTH]-minute YouTube/video script for: [TOPIC]
-Include: 15-second hook, 3-5 key points with examples, a story or case study, call to action.
-Format: [HOST NAME]: [DIALOGUE] with [VISUAL NOTES] cues.
+  BONUS.forEach(p => {
+    doc.font('Helvetica-Bold')
+    doc.fillColor('#111111')
+    doc.text(`${p.n}. ${p.q}`, { indent: 0 })
+    doc.moveDown(0.5)
+    doc.font('Helvetica')
+    doc.fillColor('#444444')
+    doc.text('Your answer:', { indent: 10 })
+    doc.moveDown(1.5)
+  })
 
-14. NEWSLETTER ISSUE
-Write a weekly newsletter for [AUDIENCE] covering:
-- 1 major industry development (with my take)
-- 1 actionable tip they can use this week
-- 1 tool or resource worth knowing about
-- 1 personal update or observation
-Format: conversational, 400-600 words. Subject line + preview text.
+  // Final page
+  doc.addPage()
+  doc.font('Helvetica-Bold')
+  doc.fontSize(24)
+  doc.fillColor('#10b981')
+  doc.text('Want more?', { align: 'center' })
+  doc.moveDown(1)
 
-15. GITHUB README
-Write a compelling README.md for [PROJECT NAME]: [DESCRIPTION]
-Include: Overview, Features, Quick Start, Use Cases, Roadmap, Contributing.
-Make it honest — don't oversell. Technical audience but not condescending.
+  doc.font('Helvetica')
+  doc.fontSize(12)
+  doc.fillColor('#666666')
+  doc.text('These prompts are what we use daily at EMVY.', { align: 'center' })
+  doc.text('We build AI automation for service businesses.', { align: 'center' })
+  doc.moveDown(1.5)
 
----
+  doc.font('Helvetica-Bold')
+  doc.fontSize(14)
+  doc.fillColor('#111111')
+  doc.text('Book an AI Audit — $1,500', { align: 'center' })
+  doc.moveDown(0.5)
+  doc.fontSize(12)
+  doc.fillColor('#666666')
+  doc.text('emvy.ai', { align: 'center' })
+  doc.text('hello@emvy.ai', { align: 'center' })
 
-CATEGORY 4: OPERATIONS AGENT PROMPTS
-
-16. PROCESS DOCUMENTATION
-Document my current workflow for [TASK] step by step.
-Format as: numbered steps, time estimates per step, tools used, common failure points, how to recover from failures.
-This is for a new team member or AI agent picking up the task.
-
-17. SOP WRITING
-Write a Standard Operating Procedure for: [TASK]
-Format: Purpose, Scope, Materials Needed, Step-by-Step Instructions, Quality Checklist, Troubleshooting Guide.
-This is for a competent person who's never done this specific task before.
-
-18. ERROR HANDLING GUIDE
-I'm building an automated workflow for [TASK]. What could go wrong at each step?
-For each failure mode, give: What happens, How to detect it, How to fix it, How to prevent it.
-Format as a table: Step | Failure Mode | Detection | Fix | Prevention.
-
-19. MEETING NOTES → ACTION ITEMS
-Convert these meeting notes into: Key decisions made, Action items with owners and deadlines, Questions to resolve before next meeting, A 3-sentence executive summary.
-Meeting notes: [PASTE NOTES HERE]
-
-20. PROJECT TIMELINE
-Generate a realistic project timeline for: [PROJECT TYPE]
-Include: phases, milestones, time estimates, dependencies (what must be done before what), buffer time for unexpected delays.
-I'm working: [NUMBER] hours per week on this.
-Deadline: [DATE].
-
----
-
-CATEGORY 5: SALES AGENT PROMPTS
-
-21. DISCOVERY CALL QUALIFICATION
-I'm about to jump on a discovery call with [PROSPECT TYPE]. Give me:
-- 10 qualifying questions to ask
-- Red flags that mean I should not take this client
-- Green flags that mean this is ideal
-- How to position my pricing without underselling
-- 3 closing techniques appropriate for this prospect type
-
-22. PROPOSAL OUTLINE
-Write a proposal outline for: [PROJECT TYPE] for [CLIENT TYPE].
-Include: Problem Statement, Proposed Solution, Scope of Work, Timeline, Pricing (with payment terms), Guarantees/Risks, CTA.
-Keep it under 5 pages.
-
-23. OBJECTION HANDLING
-Generate responses to these common objections for [SERVICE]:
-1. "It's too expensive"
-2. "I need to think about it"
-3. "We're already working with someone"
-4. "Can you do it for free first?"
-5. "I don't have time right now"
-
-Each response: 2-3 sentences. Reframe the objection, don't argue.
-
-24. PRICING PAGE COPY
-Write landing page copy for my [SERVICE] at [PRICE].
-Include: Hero headline + subheadline, 3 benefit bullets, social proof placeholder section, FAQ with 5 real objections, urgency element (without being fake), CTA.
-Target audience: [AUDIENCE]. Tone: [TONE].
-
-25. REFERRAL REQUEST
-Write a message asking [CLIENT] for a referral.
-Context: what I did for them, what the result was, why they might know someone who'd benefit.
-Format: 3 versions — text message, email, in-person talking points.
-
----
-
-BONUS: QUICK-FIRE PROMPTS
-
-26. "What's the one thing about [INDUSTRY] that most people miss but is obvious once pointed out?"
-
-27. "Give me 5 names of podcasts in [NICHE] that would be good for a guest appearance."
-
-28. "Write 10 headlines for a [TYPE OF CONTENT] about [TOPIC]. Make them provocative, not clever."
-
-29. "What are the 3 dumbest things people believe about [INDUSTRY/TOPIC] that are completely wrong?"
-
-30. "Draft a 60-second pitch for [YOUR SERVICE] that a 5-year-old would understand."
-
----
-
-Want more? These prompts are used by the EMVY team daily. We're building AI automation for service businesses in Perth.
-www.emvy-booking.vercel.app
-`
+  doc.end()
+  return Buffer.concat(chunks)
+}
 
 export async function POST(request: Request) {
   try {
@@ -231,20 +224,35 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
+    const pdfBuffer = generatePromptsPDF()
+
     await transporter.sendMail({
       from: '"EMVY — Shut Up and Build" <dawnlabsai@gmail.com>',
       to: email,
       subject: 'Your 50 AI Agent Prompts — Shut Up and Build Pack',
-      text: PROMPTS_CONTENT,
+      text: `Your 50 AI Agent Prompts are attached.\n\nDownload the PDF and start using these prompts today.\n\nEMVY — AI Audit Agency\nemvy.ai\nhello@emvy.ai`,
       html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 620px; margin: 0 auto; padding: 40px 20px; background: #030307; color: #f4f4f5;">
-          <div style="text-align: center; margin-bottom: 24px;">
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background: #030307; color: #f4f4f5;">
+          <div style="text-align: center; margin-bottom: 32px;">
             <div style="display: inline-block; width: 48px; height: 48px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; line-height: 48px; font-size: 24px; color: white; font-weight: bold;">E</div>
-            <h1 style="color: #10b981; font-size: 24px; margin: 16px 0 8px;">Your 50 AI Agent Prompts</h1>
-            <p style="color: #71717a; font-size: 14px; margin: 0;">50 working prompts for OpenClaw, Claude, and any AI agent. Copy and use immediately.</p>
+            <h1 style="color: #10b981; font-size: 24px; margin: 16px 0 8px;">Your prompts are ready.</h1>
+            <p style="color: #71717a; font-size: 14px; margin: 0;">50 AI agent prompts — PDF attached. Copy, paste, and start building.</p>
           </div>
-          <div style="background: #0a0a0f; border: 1px solid #1a1a25; border-radius: 16px; padding: 24px; margin-bottom: 16px;">
-            <pre style="color: #a1a1aa; font-size: 13px; line-height: 1.6; margin: 0; white-space: pre-wrap; font-family: 'Courier New', Courier, monospace;">${PROMPTS_CONTENT.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+          <div style="background: #0a0a0f; border: 1px solid #1a1a25; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+            <h2 style="color: white; font-size: 16px; margin: 0 0 12px;">What's inside the PDF:</h2>
+            <ul style="color: #a1a1aa; font-size: 14px; margin: 0; padding-left: 20px; line-height: 2;">
+              <li>5 Research Agent Prompts (prompts 1-5)</li>
+              <li>5 Outreach Agent Prompts (prompts 6-10)</li>
+              <li>5 Content Agent Prompts (prompts 11-15)</li>
+              <li>5 Operations Agent Prompts (prompts 16-20)</li>
+              <li>5 Sales Agent Prompts (prompts 21-25)</li>
+              <li>5 Quick-Fire Bonus Prompts (prompts 26-30)</li>
+            </ul>
+          </div>
+          <div style="background: #0a0a0f; border: 1px solid #1a1a25; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+            <p style="color: #a1a1aa; font-size: 14px; line-height: 1.6; margin: 0;">
+              Each prompt has a clear description + a blank space for your version. Print it, fill it in, use it immediately.
+            </p>
           </div>
           <div style="text-align: center; margin-bottom: 24px;">
             <a href="https://emvy-booking.vercel.app" style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 14px;">Book an AI Audit — $1,500</a>
@@ -252,6 +260,13 @@ export async function POST(request: Request) {
           <p style="color: #52525b; font-size: 12px; text-align: center; margin: 0;">EMVY — AI Audit Agency — Perth, Australia<br>dawnlabsai@gmail.com</p>
         </div>
       `,
+      attachments: [
+        {
+          filename: '50-AI-Agent-Prompts-SHUT-UP-AND-BUILD.pdf',
+          content: pdfBuffer,
+          contentType: 'application/pdf',
+        },
+      ],
     })
 
     return NextResponse.json({ success: true })
