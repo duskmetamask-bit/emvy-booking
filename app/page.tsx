@@ -179,7 +179,8 @@ export default function BookingPage() {
 
       if (!res.ok) throw new Error('Failed to submit')
       setStatus('success')
-      setMessage(`You're booked for ${bookingData.date} at ${selectedSlot} AWST. Check your email for confirmation.`)
+      const data = await res.json()
+      setMessage(`Check your email — click the link to confirm your ${bookingData.date} call time.`)
       setForm({ name: '', email: '', company: '', goal: '' })
       setSelectedDate(null)
       setSelectedSlot(null)
