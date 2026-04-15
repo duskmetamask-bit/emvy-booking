@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
     // Send confirmation to the person who booked
     const { error: confirmError } = await resend.emails.send({
-      from: 'EMVY <hello@emvy.ai>',
+      from: 'EMVY <dawnlabsai@gmail.com>',
       to: email,
       subject: `Your call is booked — ${date} at ${time}`,
       html: `
@@ -64,11 +64,11 @@ export async function POST(request: Request) {
 
           <p style="color: #52525b; font-size: 12px; text-align: center; margin-top: 32px;">
             EMVY — AI Audit Agency — Perth, Australia<br>
-            hello@emvy.ai
+            dawnlabsai@gmail.com
           </p>
         </div>
       `,
-      text: `You're booked!\n\nDate: ${date}\nTime: ${time} ${timezone || 'AWST'}\nWith: Dusk — EMVY\n\nWhat you told us: "${goal}"\n\nEMVY — AI Audit Agency\nhello@emvy.ai`,
+      text: `You're booked!\n\nDate: ${date}\nTime: ${time} ${timezone || 'AWST'}\nWith: Dusk — EMVY\n\nWhat you told us: "${goal}"\n\nEMVY — AI Audit Agency\ndawnlabsai@gmail.com`,
     })
 
     if (confirmError) {
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
 
     // Also notify EMVY team
     await resend.emails.send({
-      from: 'EMVY Booking <hello@emvy.ai>',
+      from: 'EMVY Booking <dawnlabsai@gmail.com>',
       to: 'dawnlabsai@gmail.com',
       subject: `New booking — ${name} from ${company || 'no company'}`,
       text: `New EMVY booking!\n\nName: ${name}\nEmail: ${email}\nCompany: ${company || '—'}\nDate: ${date}\nTime: ${time}\nTimezone: ${timezone || 'AWST'}\n\nGoal:\n${goal}\n\nSubmitted: ${submittedAt || new Date().toISOString()}`,
@@ -87,6 +87,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, message: 'Booking received' })
   } catch (error) {
     console.error('Booking error:', error)
-    return NextResponse.json({ error: 'Failed to process booking. Please email us at hello@emvy.ai' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to process booking. Please email us at dawnlabsai@gmail.com' }, { status: 500 })
   }
 }

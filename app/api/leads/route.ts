@@ -227,7 +227,7 @@ export async function POST(request: Request) {
 
     // Send the prompts to the subscriber
     const { error: promptsError } = await resend.emails.send({
-      from: 'EMVY — Shut Up and Build <hello@emvy.ai>',
+      from: 'EMVY — Shut Up and Build <dawnlabsai@gmail.com>',
       to: email,
       subject: 'Your 50 AI Agent Prompts — Shut Up and Build Pack',
       html: `
@@ -264,7 +264,7 @@ export async function POST(request: Request) {
 
           <p style="color: #52525b; font-size: 12px; text-align: center; margin: 0;">
             EMVY — AI Audit Agency — Perth, Australia<br>
-            hello@emvy.ai
+            dawnlabsai@gmail.com
           </p>
         </div>
       `,
@@ -278,6 +278,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Lead magnet error:', error)
-    return NextResponse.json({ error: 'Something went wrong. Email us at hello@emvy.ai' }, { status: 500 })
+    return NextResponse.json({ error: 'Something went wrong. Email us at dawnlabsai@gmail.com' }, { status: 500 })
   }
 }
