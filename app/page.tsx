@@ -31,9 +31,17 @@ function formatDate(day: number, month: number, year: number) {
 }
 
 function DatePicker({ selectedDate, selectedMonth, selectedYear, onSelect }: { selectedDate: number | null; selectedMonth: number; selectedYear: number; onSelect: (day: number, month: number, year: number) => void }) {
-  const today = new Date()
-  const [viewYear, setViewYear] = useState(selectedYear || today.getFullYear())
-  const [viewMonth, setViewMonth] = useState(selectedMonth || today.getMonth())
+  const [today, setToday] = useState<{ day: number; month: number; year: number } | null>(null)
+  const [viewYear, setViewYear] = useState(selectedYear || 2024)
+  const [viewMonth, setViewMonth] = useState(selectedMonth || 0)
+
+  // Set today's date client-side only (avoids hydration mismatch)
+  useEffect(() => {
+    const now = new Date()
+    setToday({ day: now.getDate(), month: now.getMonth(), year: now.getFullYear() })
+    setViewYear(selectedYear || now.getFullYear())
+    setViewMonth(selectedMonth || now.getMonth())
+  }, [])
 
   // Sync viewMonth when selectedMonth prop changes (e.g. after month navigation)
   useEffect(() => {
@@ -44,9 +52,9 @@ function DatePicker({ selectedDate, selectedMonth, selectedYear, onSelect }: { s
 
   const daysInMonth = getDaysInMonth(viewYear, viewMonth)
   const firstDay = getFirstDayOfMonth(viewYear, viewMonth)
-  const todayDay = today.getDate()
-  const todayMonth = today.getMonth()
-  const todayYear = today.getFullYear()
+  const todayDay = today?.day ?? 1
+  const todayMonth = today?.month ?? 0
+  const todayYear = today?.year ?? 2024
 
   const monthLabel = new Date(viewYear, viewMonth).toLocaleDateString('en-AU', {
     month: 'long',
@@ -67,10 +75,34 @@ function DatePicker({ selectedDate, selectedMonth, selectedYear, onSelect }: { s
   }
 
   const isPast = (day: number) => {
+    if (!today) return true
     if (viewYear < todayYear) return true
     if (viewYear === todayYear && viewMonth < todayMonth) return true
     if (viewYear === todayYear && viewMonth === todayMonth && day < todayDay) return true
     return false
+  }
+
+  // Show loading skeleton until client-side date is available (avoids hydration mismatch)
+  if (!today) {
+    return (
+      <div className="bg-[#0a0a0f] border border-[#1a1a25] rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="w-8 h-8 rounded-lg bg-[#0d0d14] border border-[#1a1a25]" />
+          <div className="w-32 h-5 bg-[#0d0d14] rounded animate-pulse" />
+          <div className="w-8 h-8 rounded-lg bg-[#0d0d14] border border-[#1a1a25]" />
+        </div>
+        <div className="grid grid-cols-7 mb-3">
+          {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => (
+            <div key={d} className="text-center text-xs text-[#52525b] font-medium py-2">{d}</div>
+          ))}
+        </div>
+        <div className="grid grid-cols-7 gap-1">
+          {Array.from({ length: 35 }).map((_, i) => (
+            <div key={i} className="h-10 rounded-xl bg-[#0d0d14]/50" />
+          ))}
+        </div>
+      </div>
+    )
   }
 
   return (
