@@ -1,15 +1,7 @@
 import { NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: 'dawnlabsai@gmail.com',
-    pass: process.env.GMAIL_APP_PASSWORD || 'wrankndsznzwjiksia',
-  },
-})
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 const PROMPTS_CONTENT = `
 50 AI AGENT PROMPTS — THE SHUT UP AND BUILD PACK
@@ -118,7 +110,7 @@ Target: [WORD COUNT] words. Audience: [AUDIENCE].
 13. VIDEO SCRIPT
 Write a [LENGTH]-minute YouTube/video script for: [TOPIC]
 Include: 15-second hook, 3-5 key points with examples, a story or case study, call to action.
-Format as: [HOST NAME]: [DIALOGUE] with [VISUAL NOTES] cues.
+Format: [HOST NAME]: [DIALOGUE] with [VISUAL NOTES] cues.
 
 14. NEWSLETTER ISSUE
 Write a weekly newsletter for [AUDIENCE] covering:
@@ -234,11 +226,10 @@ export async function POST(request: Request) {
     }
 
     // Send the prompts to the subscriber
-    await transporter.sendMail({
-      from: '"EMVY — Shut Up and Build" <dawnlabsai@gmail.com>',
+    const { error: promptsError } = await resend.emails.send({
+      from: 'EMVY — Shut Up and Build <hello@emvy.ai>',
       to: email,
       subject: 'Your 50 AI Agent Prompts — Shut Up and Build Pack',
-      text: PROMPTS_CONTENT,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 620px; margin: 0 auto; padding: 40px 20px; background: #030307; color: #f4f4f5;">
           <div style="text-align: center; margin-bottom: 32px;">
@@ -278,6 +269,11 @@ export async function POST(request: Request) {
         </div>
       `,
     })
+
+    if (promptsError) {
+      console.error('Resend prompts error:', promptsError)
+      throw promptsError
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

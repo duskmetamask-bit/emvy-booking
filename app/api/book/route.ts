@@ -1,16 +1,7 @@
 import { NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 
-// Gmail SMTP transporter — credentials from environment
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: 'dawnlabsai@gmail.com',
-    pass: process.env.GMAIL_APP_PASSWORD || 'wrankndsznzwjiksia',
-  },
-})
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: Request) {
   try {
@@ -31,8 +22,8 @@ export async function POST(request: Request) {
     }
 
     // Send confirmation to the person who booked
-    await transporter.sendMail({
-      from: '"EMVY" <dawnlabsai@gmail.com>',
+    const { error: confirmError } = await resend.emails.send({
+      from: 'EMVY <hello@emvy.ai>',
       to: email,
       subject: `Your call is booked — ${date} at ${time}`,
       html: `
@@ -80,9 +71,14 @@ export async function POST(request: Request) {
       text: `You're booked!\n\nDate: ${date}\nTime: ${time} ${timezone || 'AWST'}\nWith: Dusk — EMVY\n\nWhat you told us: "${goal}"\n\nEMVY — AI Audit Agency\nhello@emvy.ai`,
     })
 
+    if (confirmError) {
+      console.error('Resend confirm error:', confirmError)
+      throw new Error('Failed to send confirmation email')
+    }
+
     // Also notify EMVY team
-    await transporter.sendMail({
-      from: '"EMVY Booking" <dawnlabsai@gmail.com>',
+    await resend.emails.send({
+      from: 'EMVY Booking <hello@emvy.ai>',
       to: 'dawnlabsai@gmail.com',
       subject: `New booking — ${name} from ${company || 'no company'}`,
       text: `New EMVY booking!\n\nName: ${name}\nEmail: ${email}\nCompany: ${company || '—'}\nDate: ${date}\nTime: ${time}\nTimezone: ${timezone || 'AWST'}\n\nGoal:\n${goal}\n\nSubmitted: ${submittedAt || new Date().toISOString()}`,
