@@ -34,6 +34,12 @@ function DatePicker({ selectedDate, selectedMonth, selectedYear, onSelect }: { s
   const today = new Date()
   const [viewYear, setViewYear] = useState(selectedYear || today.getFullYear())
   const [viewMonth, setViewMonth] = useState(selectedMonth || today.getMonth())
+
+  // Sync viewMonth when selectedMonth prop changes (e.g. after month navigation)
+  useEffect(() => {
+    setViewMonth(selectedMonth)
+    setViewYear(selectedYear)
+  }, [selectedMonth, selectedYear])
   const [hoveredDate, setHoveredDate] = useState<number | null>(null)
 
   const daysInMonth = getDaysInMonth(viewYear, viewMonth)
@@ -238,7 +244,7 @@ export default function BookingPage() {
           <div className={`text-center mb-20 ${mounted ? 'animate-slide-up' : 'opacity-0'}`}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#10b981]/10 border border-[#10b981]/20 text-[#34d399] text-sm font-medium mb-8">
               <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-              Perth's AI Audit Agency
+              AI Audit Agency
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-[1.1] tracking-tight">
@@ -248,7 +254,7 @@ export default function BookingPage() {
             </h1>
 
             <p className="text-lg md:text-xl text-[#a1a1aa] max-w-2xl mx-auto mb-10 leading-relaxed">
-              Service businesses in Perth are losing 8-15 hours a week to admin tasks a bot could handle. 
+              Service businesses waste 10+ hours a week on admin tasks a bot could handle.
               We find those gaps. We build the automation. We support it.
             </p>
 
@@ -273,7 +279,7 @@ export default function BookingPage() {
               </span>
               <span className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-[#10b981]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                Perth-based
+                Australia-based
               </span>
             </div>
           </div>
@@ -282,9 +288,9 @@ export default function BookingPage() {
           <div className={`mb-20 ${mounted ? 'animate-slide-up stagger-1' : 'opacity-0'}`}>
             <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
               {[
-                { stat: '8hrs', label: 'per week', desc: 'the average service business owner spends on admin tasks that could be automated' },
-                { stat: '23%', label: 'of calls', desc: 'are booking enquiries that a bot could handle before they reach your staff' },
-                { stat: '$12K', label: 'per year', desc: 'the hidden cost of missed calls, slow follow-ups, and manual admin at a 5-person service business' },
+                { stat: '10hrs', label: 'per week', desc: 'the average service business owner spends on admin tasks that could be automated' },
+                { stat: '40%', label: 'of calls', desc: 'are booking enquiries that an AI receptionist could handle before they reach your staff' },
+                { stat: '$2K', label: 'per month', desc: 'the cost of a missed lead — one quote not sent, one call not answered' },
               ].map((item, i) => (
                 <div key={i} className="text-center p-8 rounded-2xl bg-[#0d0d14]/50 border border-[#1a1a25] backdrop-blur-sm">
                   <div className="text-5xl md:text-6xl font-bold gradient-text mb-2">{item.stat}</div>
@@ -306,7 +312,7 @@ export default function BookingPage() {
                   step: '01',
                   title: 'AI Audit',
                   price: '$1,500',
-                  timeframe: '1-2 weeks',
+                  timeframe: '5 days',
                   desc: 'We map your current workflows, identify automation opportunities, and deliver a prioritized roadmap. You know exactly what to automate first — and why.',
                   bullets: ['Workflow mapping', 'AI opportunity audit', 'ROI analysis', 'Prioritized action plan'],
                   cta: 'Start with an audit',
@@ -364,28 +370,28 @@ export default function BookingPage() {
 
           {/* CASE STUDIES */}
           <div id="cases" className={`mb-20 ${mounted ? 'animate-slide-up stagger-3' : 'opacity-0'}`}>
-            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">Results We've Delivered</h2>
-            <p className="text-[#a1a1aa] text-center max-w-xl mx-auto mb-12">Real outcomes from real Perth businesses.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">What the Audit Delivers</h2>
+            <p className="text-[#a1a1aa] text-center max-w-xl mx-auto mb-12">Every audit maps your actual bottlenecks and delivers a ranked action plan.</p>
 
             <div className="space-y-6 max-w-3xl mx-auto">
               {[
                 {
-                  industry: 'Physiotherapy Clinic',
-                  before: 'Front desk spending 3 hours/day on phone booking calls. Constant no-shows. Staff frustrated.',
-                  after: 'AI receptionist handles 80% of booking calls. No-show rate dropped 40%. Front desk focuses on patient care.',
-                  metric: '3hrs saved/day',
+                  industry: 'Service Business Pattern',
+                  before: 'Owner or staff handling quotes, bookings, follow-ups, and admin manually. Leads falling through gaps.',
+                  after: 'AI handles enquiries instantly, quotes go out faster, follow-ups run on autopilot, staff focus on delivering the service.',
+                  metric: 'Same-day response',
                 },
                 {
-                  industry: 'Tradie Electrical Business',
-                  before: 'Owner managing 6 tradies via WhatsApp and phone. Job quotes taking 2 days. Customer follow-up falling through.',
-                  after: 'AI quotes jobs in 4 hours (not 2 days). Automated SMS reminders. Job tracking via AI agent. Owner focuses on field work.',
-                  metric: '2 days → 4hrs on quotes',
+                  industry: 'High-Volume Enquiry Business',
+                  before: 'Phone ringing off the hook. Booking calls interrupting actual work. Missed calls = missed revenue.',
+                  after: 'AI receptionist answers every call, qualifies the enquiry, and books into your calendar without touching your phone.',
+                  metric: '0 missed calls',
                 },
                 {
-                  industry: 'Medical Practice',
-                  before: 'NDIS patients requiring extensive phone intake. Multi-practitioner scheduling chaos. High admin turnover.',
-                  after: 'AI intake chatbot collects patient history before appointment. Scheduling coordinated across 4 practitioners. Admin load cut in half.',
-                  metric: '50% less admin',
+                  industry: 'Growth-Stage Business',
+                  before: 'Admin workload scaling faster than revenue. Hiring a receptionist but still drowning.',
+                  after: 'Automation handles the volume. Staff do less busywork, more valuable tasks. Headcount cost redirected to revenue-generating roles.',
+                  metric: 'Scaled without hiring',
                 },
               ].map((item, i) => (
                 <div key={i} className="p-6 md:p-8 rounded-2xl bg-[#0d0d14]/50 border border-[#1a1a25]">
@@ -617,7 +623,7 @@ export default function BookingPage() {
               <div className="flex items-center gap-6 text-sm text-[#71717a]">
                 <a href="mailto:hello@emvy.ai" className="hover:text-white transition-colors">hello@emvy.ai</a>
                 <span className="text-[#27272a]">|</span>
-                <span>Perth, Australia</span>
+                <span>Australia</span>
               </div>
             </div>
             <div className="mt-8 pt-6 border-t border-[#1a1a25]/50 text-center text-xs text-[#52525b]">

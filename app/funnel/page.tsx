@@ -36,7 +36,7 @@ const EMAIL_TEMPLATES = [
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -62,7 +62,7 @@ Every time you're on a roof, under a sink, or elbow-deep in a job — your phone
 
 And every missed call is a quote someone else just picked up.
 
-We help Perth tradies fix their phone situation so jobs don't slip through the cracks. Not a fancy app — just a better way to catch every lead and follow up without it taking over your life.
+We help tradies fix their phone situation so jobs don't slip through the cracks. Not a fancy app — just a better way to catch every lead and follow up without it taking over your life.
 
 Worth 10 minutes?
 
@@ -82,7 +82,7 @@ Real talk — how many quotes do you reckon you've sent this year that just neve
 
 The hard truth is most tradies send the quote and move on. Meanwhile the customer's already picked someone else because they followed up.
 
-We help Perth tradies build a simple follow-up system so you're not leaving money on the table. Not pushy — just a way to stay in the picture without adding hours to your day.
+We help tradies build a simple follow-up system so you're not leaving money on the table. Not pushy — just a way to stay in the picture without adding hours to your day.
 
 Keen to hear how it works?
 
@@ -102,9 +102,9 @@ Noticed on your site that you offer [SAME-DAY SERVICE / 24-7 EMERGENCY / FREE QU
 
 That's a solid differentiator — but it only works if you're actually catching every call and getting quotes out fast.
 
-We help [electricians/plumbers/HVAC techs/builders] in Perth tidy up their leads process so [same-day service / 24-7 response] actually converts to jobs, not just lost voicemails.
+We help [electricians/plumbers/HVAC techs/builders] tidy up their leads process so [same-day service / 24-7 response] actually converts to jobs, not just lost voicemails.
 
-Happy to show you what we've seen work for tradies in [SUBURB]?
+Happy to show you what we've seen work for tradies in Australia?
 
 [Let's chat for 10 mins]
 
@@ -120,7 +120,7 @@ Cheers,
 
 Chasing you because I sent a note a few days ago and it might've got buried.
 
-Not going to pretend this is a sales pitch you'll love — but the stuff we do for Perth tradies is genuinely useful if you're sick of admin eating your nights and weekends.
+Not going to pretend this is a sales pitch you'll love — but the stuff we do for tradies is genuinely useful if you're sick of admin eating your nights and weekends.
 
 Still worth 10 minutes if you're curious.
 
@@ -196,7 +196,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -285,7 +285,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -340,7 +340,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -359,7 +359,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -378,7 +378,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -397,7 +397,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -416,7 +416,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -435,7 +435,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -454,7 +454,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -473,7 +473,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
@@ -492,7 +492,7 @@ Dusk`,
 
 I'll keep this short.
 
-Most tradies I talk to in Perth are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
+Most tradies I talk to are flat out doing the actual work — then they get home and spend 2 hours on quotes, invoices and chasing payments.
 
 That's not why you got into your trade.
 
