@@ -63,7 +63,7 @@ const CATEGORIES = [
       { n: 22, title: 'PROPOSAL OUTLINE', desc: 'Write a proposal outline for [PROJECT] for [CLIENT]: Problem Statement, Proposed Solution, Scope of Work, Timeline, Pricing with payment terms, Guarantees/Risks, CTA. Keep it under 5 pages.' },
       { n: 23, title: 'OBJECTION HANDLING', desc: 'Generate responses to these objections for [SERVICE]: (1) "It\'s too expensive", (2) "I need to think about it", (3) "We\'re already working with someone", (4) "Can you do it for free first?", (5) "I don\'t have time right now". 2-3 sentences each. Reframe, don\'t argue.' },
       { n: 24, title: 'PRICING PAGE COPY', desc: 'Write landing page copy for [SERVICE] at [PRICE]: hero headline + subheadline, 3 benefit bullets, social proof placeholder, FAQ with 5 real objections, urgency element (without being fake), CTA. Audience: [AUDIENCE]. Tone: [TONE].' },
-      { n: 25, title: 'REFERRAL REQUEST', desc: 'Write a message asking [CLIENT] for a referral. Context: what I did for them, what the result was, why they might know someone who'd benefit. 3 versions: text message, email, in-person talking points.' },
+      { n: 25, title: 'REFERRAL REQUEST', desc: "Write a message asking [CLIENT] for a referral. Context: what I did for them, what the result was, why they might know someone who'd benefit. 3 versions: text message, email, in-person talking points." },
     ],
   },
 ]
