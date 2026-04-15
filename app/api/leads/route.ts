@@ -1,7 +1,29 @@
 import { NextResponse } from 'next/server'
-import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const ELASTIC_API_KEY = process.env.ELASTIC_API_KEY || '93F6F43BA64B92C176FB3AF49D9C6777C4C2FF40B97E2B64935CBB9075BFF9835B399463C71C1991926CDE2CEF57B7A6'
+const ELASTIC_API_URL = 'https://api.elasticemail.com/v2/email/send'
+
+async function sendEmail(to: string, subject: string, bodyText: string, bodyHtml: string) {
+  const params = new URLSearchParams({
+    apiKey: ELASTIC_API_KEY,
+    from: 'dawnlabsai@gmail.com',
+    fromName: 'EMVY — Shut Up and Build',
+    to,
+    subject,
+    body_text: bodyText,
+    body_html: bodyHtml,
+  })
+
+  const res = await fetch(`${ELASTIC_API_URL}?${params.toString()}`, {
+    method: 'POST',
+  })
+
+  const data = await res.json()
+  if (!data.success) {
+    throw new Error(data.error || 'Failed to send email')
+  }
+  return data
+}
 
 const PROMPTS_CONTENT = `
 50 AI AGENT PROMPTS — THE SHUT UP AND BUILD PACK
@@ -225,19 +247,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
-    // Send the prompts to the subscriber
-    const { error: promptsError } = await resend.emails.send({
-      from: 'EMVY — Shut Up and Build <dawnlabsai@gmail.com>',
-      to: email,
-      subject: 'Your 50 AI Agent Prompts — Shut Up and Build Pack',
-      html: `
+    await sendEmail(
+      email,
+      'Your 50 AI Agent Prompts — Shut Up and Build Pack',
+      PROMPTS_CONTENT,
+      `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 620px; margin: 0 auto; padding: 40px 20px; background: #030307; color: #f4f4f5;">
           <div style="text-align: center; margin-bottom: 32px;">
             <div style="display: inline-block; width: 48px; height: 48px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; line-height: 48px; font-size: 24px; color: white; font-weight: bold;">E</div>
             <h1 style="color: #10b981; font-size: 24px; margin: 16px 0 8px;">Your prompts are here.</h1>
             <p style="color: #71717a; font-size: 14px; margin: 0;">50 working AI agent prompts — copy and use immediately.</p>
           </div>
-
           <div style="background: #0a0a0f; border: 1px solid #1a1a25; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
             <h2 style="color: white; font-size: 16px; margin: 0 0 12px;">What's inside:</h2>
             <ul style="color: #a1a1aa; font-size: 14px; margin: 0; padding-left: 20px; line-height: 2;">
@@ -249,31 +269,18 @@ export async function POST(request: Request) {
               <li>10 Quick-Fire Bonus Prompts</li>
             </ul>
           </div>
-
           <div style="background: #0a0a0f; border: 1px solid #1a1a25; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
             <p style="color: #a1a1aa; font-size: 14px; line-height: 1.8; margin: 0;">
               These prompts are what we use daily at EMVY. They work with OpenClaw, Claude, ChatGPT, or any AI agent framework.
             </p>
           </div>
-
           <div style="text-align: center; margin-bottom: 24px;">
-            <a href="https://emvy-booking.vercel.app" style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 14px;">
-              Book an AI Audit — $1,500
-            </a>
+            <a href="https://emvy-booking.vercel.app" style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 14px;">Book an AI Audit — $1,500</a>
           </div>
-
-          <p style="color: #52525b; font-size: 12px; text-align: center; margin: 0;">
-            EMVY — AI Audit Agency — Perth, Australia<br>
-            dawnlabsai@gmail.com
-          </p>
+          <p style="color: #52525b; font-size: 12px; text-align: center; margin: 0;">EMVY — AI Audit Agency — Perth, Australia<br>dawnlabsai@gmail.com</p>
         </div>
-      `,
-    })
-
-    if (promptsError) {
-      console.error('Resend prompts error:', promptsError)
-      throw promptsError
-    }
+      `
+    )
 
     return NextResponse.json({ success: true })
   } catch (error) {
