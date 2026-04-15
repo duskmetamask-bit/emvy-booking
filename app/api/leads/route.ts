@@ -1,31 +1,13 @@
 import { NextResponse } from 'next/server'
+import nodemailer from 'nodemailer'
 
-const ELASTIC_API_KEY = process.env.ELASTIC_API_KEY || '93F6F43BA64B92C176FB3AF49D9C6777C4C2FF40B97E2B64935CBB9075BFF9835B399463C71C1991926CDE2CEF57B7A6'
-const ELASTIC_API_URL = 'https://api.elasticemail.com/v2/email/send'
-
-async function sendEmail(to: string, subject: string, bodyText: string, bodyHtml: string) {
-  const body = new URLSearchParams({
-    apiKey: ELASTIC_API_KEY,
-    from: 'dawnlabsai@gmail.com',
-    fromName: 'EMVY — Shut Up and Build',
-    to,
-    subject,
-    body_text: bodyText,
-    body_html: bodyHtml,
-  })
-
-  const res = await fetch(ELASTIC_API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body.toString(),
-  })
-
-  const data = await res.json()
-  if (!data.success) {
-    throw new Error(data.error || 'Failed to send email')
-  }
-  return data
-}
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'dawnlabsai@gmail.com',
+    pass: process.env.GMAIL_APP_PASSWORD || 'wrankndsznzwjiksia',
+  },
+})
 
 const PROMPTS_CONTENT = `
 50 AI AGENT PROMPTS — THE SHUT UP AND BUILD PACK
@@ -249,11 +231,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
-    await sendEmail(
-      email,
-      'Your 50 AI Agent Prompts — Shut Up and Build Pack',
-      PROMPTS_CONTENT,
-      `
+    await transporter.sendMail({
+      from: '"EMVY — Shut Up and Build" <dawnlabsai@gmail.com>',
+      to: email,
+      subject: 'Your 50 AI Agent Prompts — Shut Up and Build Pack',
+      text: PROMPTS_CONTENT,
+      html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 620px; margin: 0 auto; padding: 40px 20px; background: #030307; color: #f4f4f5;">
           <div style="text-align: center; margin-bottom: 32px;">
             <div style="display: inline-block; width: 48px; height: 48px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; line-height: 48px; font-size: 24px; color: white; font-weight: bold;">E</div>
@@ -281,8 +264,8 @@ export async function POST(request: Request) {
           </div>
           <p style="color: #52525b; font-size: 12px; text-align: center; margin: 0;">EMVY — AI Audit Agency — Perth, Australia<br>dawnlabsai@gmail.com</p>
         </div>
-      `
-    )
+      `,
+    })
 
     return NextResponse.json({ success: true })
   } catch (error) {

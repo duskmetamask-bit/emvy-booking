@@ -1,31 +1,13 @@
 import { NextResponse } from 'next/server'
+import nodemailer from 'nodemailer'
 
-const ELASTIC_API_KEY = process.env.ELASTIC_API_KEY || '93F6F43BA64B92C176FB3AF49D9C6777C4C2FF40B97E2B64935CBB9075BFF9835B399463C71C1991926CDE2CEF57B7A6'
-const ELASTIC_API_URL = 'https://api.elasticemail.com/v2/email/send'
-
-async function sendEmail(to: string, subject: string, bodyText: string, bodyHtml: string) {
-  const body = new URLSearchParams({
-    apiKey: ELASTIC_API_KEY,
-    from: 'dawnlabsai@gmail.com',
-    fromName: 'EMVY',
-    to,
-    subject,
-    body_text: bodyText,
-    body_html: bodyHtml,
-  })
-
-  const res = await fetch(ELASTIC_API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body.toString(),
-  })
-
-  const data = await res.json()
-  if (!data.success) {
-    throw new Error(data.error || 'Failed to send email')
-  }
-  return data
-}
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'dawnlabsai@gmail.com',
+    pass: process.env.GMAIL_APP_PASSWORD || 'wrankndsznzwjiksia',
+  },
+})
 
 export async function POST(request: Request) {
   try {
@@ -46,11 +28,12 @@ export async function POST(request: Request) {
     }
 
     // Send confirmation to the person who booked
-    await sendEmail(
-      email,
-      `Your call is booked — ${date} at ${time}`,
-      `You're booked!\n\nDate: ${date}\nTime: ${time} ${timezone || 'AWST'}\nWith: Dusk — EMVY\n\nWhat you told us: "${goal}"\n\nEMVY — AI Audit Agency\ndawnlabsai@gmail.com`,
-      `
+    await transporter.sendMail({
+      from: '"EMVY" <dawnlabsai@gmail.com>',
+      to: email,
+      subject: `Your call is booked — ${date} at ${time}`,
+      text: `You're booked!\n\nDate: ${date}\nTime: ${time} ${timezone || 'AWST'}\nWith: Dusk — EMVY\n\nWhat you told us: "${goal}"\n\nEMVY — AI Audit Agency\ndawnlabsai@gmail.com`,
+      html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background: #030307; color: #f4f4f5;">
           <div style="text-align: center; margin-bottom: 32px;">
             <div style="display: inline-block; width: 48px; height: 48px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; line-height: 48px; font-size: 24px; color: white; font-weight: bold;">E</div>
@@ -73,16 +56,17 @@ export async function POST(request: Request) {
           </div>
           <p style="color: #52525b; font-size: 12px; text-align: center; margin-top: 32px;">EMVY — AI Audit Agency — Perth, Australia<br>dawnlabsai@gmail.com</p>
         </div>
-      `
-    )
+      `,
+    })
 
     // Also notify EMVY team
-    await sendEmail(
-      'dawnlabsai@gmail.com',
-      `New booking — ${name} from ${company || 'no company'}`,
-      `New EMVY booking!\n\nName: ${name}\nEmail: ${email}\nCompany: ${company || '—'}\nDate: ${date}\nTime: ${time}\nTimezone: ${timezone || 'AWST'}\n\nGoal:\n${goal}\n\nSubmitted: ${submittedAt || new Date().toISOString()}`,
-      `<p>New EMVY booking!</p><p><strong>Name:</strong> ${name}<br><strong>Email:</strong> ${email}<br><strong>Company:</strong> ${company || '—'}<br><strong>Date:</strong> ${date}<br><strong>Time:</strong> ${time}<br><strong>Timezone:</strong> ${timezone || 'AWST'}</p><p><strong>Goal:</strong><br>${goal}</p>`
-    )
+    await transporter.sendMail({
+      from: '"EMVY Booking" <dawnlabsai@gmail.com>',
+      to: 'dawnlabsai@gmail.com',
+      subject: `New booking — ${name} from ${company || 'no company'}`,
+      text: `New EMVY booking!\n\nName: ${name}\nEmail: ${email}\nCompany: ${company || '—'}\nDate: ${date}\nTime: ${time}\nTimezone: ${timezone || 'AWST'}\n\nGoal:\n${goal}\n\nSubmitted: ${submittedAt || new Date().toISOString()}`,
+      html: `<p><strong>New EMVY booking!</strong></p><p><strong>Name:</strong> ${name}<br><strong>Email:</strong> ${email}<br><strong>Company:</strong> ${company || '—'}<br><strong>Date:</strong> ${date}<br><strong>Time:</strong> ${time}<br><strong>Timezone:</strong> ${timezone || 'AWST'}</p><p><strong>Goal:</strong><br>${goal}</p>`,
+    })
 
     return NextResponse.json({ success: true, message: 'Booking received' })
   } catch (error) {
