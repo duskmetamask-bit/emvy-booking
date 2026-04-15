@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import { PDFDocument, StandardFonts } from 'pdfkit'
+import PDFDocument from 'pdfkit'
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
