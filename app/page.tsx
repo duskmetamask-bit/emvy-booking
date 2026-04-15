@@ -133,8 +133,8 @@ function DatePicker({ selectedDate, selectedMonth, selectedYear, onSelect }: { s
 export default function BookingPage() {
   const [form, setForm] = useState({ name: '', email: '', company: '', goal: '' })
   const [selectedDate, setSelectedDate] = useState<number | null>(null)
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+  const [selectedMonth, setSelectedMonth] = useState(0) // placeholder until mounted
+  const [selectedYear, setSelectedYear] = useState(2024) // placeholder until mounted
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
@@ -142,7 +142,12 @@ export default function BookingPage() {
   const [guideEmail, setGuideEmail] = useState('')
   const [guideStatus, setGuideStatus] = useState<'idle' | 'sent'>('idle')
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    setMounted(true)
+    // Set correct initial date values after mount (client-only)
+    setSelectedMonth(new Date().getMonth())
+    setSelectedYear(new Date().getFullYear())
+  }, [])
 
   const handleDateSelect = (day: number, month: number, year: number) => {
     setSelectedDate(day)
