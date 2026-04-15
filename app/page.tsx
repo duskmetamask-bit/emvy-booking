@@ -167,6 +167,7 @@ export default function BookingPage() {
       time: selectedSlot,
       timezone: AVAILABILITY.timezone,
       submittedAt: new Date().toISOString(),
+      meetingLink: process.env.NEXT_PUBLIC_CAL_COM_LINK || '',
     }
 
     try {
