@@ -30,10 +30,10 @@ function formatDate(day: number, month: number, year: number) {
   return d.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' })
 }
 
-function DatePicker({ selectedDate, onSelect }: { selectedDate: number | null; onSelect: (day: number) => void }) {
+function DatePicker({ selectedDate, selectedMonth, selectedYear, onSelect }: { selectedDate: number | null; selectedMonth: number; selectedYear: number; onSelect: (day: number, month: number, year: number) => void }) {
   const today = new Date()
-  const [viewYear, setViewYear] = useState(today.getFullYear())
-  const [viewMonth, setViewMonth] = useState(today.getMonth())
+  const [viewYear, setViewYear] = useState(selectedYear || today.getFullYear())
+  const [viewMonth, setViewMonth] = useState(selectedMonth || today.getMonth())
   const [hoveredDate, setHoveredDate] = useState<number | null>(null)
 
   const daysInMonth = getDaysInMonth(viewYear, viewMonth)
@@ -94,7 +94,7 @@ function DatePicker({ selectedDate, onSelect }: { selectedDate: number | null; o
           return (
             <button
               key={day}
-              onClick={() => available && onSelect(day)}
+              onClick={() => available && onSelect(day, viewMonth, viewYear)}
               onMouseEnter={() => setHoveredDate(day)}
               onMouseLeave={() => setHoveredDate(null)}
               disabled={!available}
@@ -138,8 +138,10 @@ export default function BookingPage() {
 
   useEffect(() => { setMounted(true) }, [])
 
-  const handleDateSelect = (day: number) => {
+  const handleDateSelect = (day: number, month: number, year: number) => {
     setSelectedDate(day)
+    setSelectedMonth(month)
+    setSelectedYear(year)
     setSelectedSlot(null)
   }
 
@@ -182,6 +184,16 @@ export default function BookingPage() {
 
   const handleGuideSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: guideEmail }),
+      })
+      if (!res.ok) throw new Error()
+    } catch {
+      // Still show success — email may have gone through
+    }
     setGuideStatus('sent')
   }
 
@@ -515,7 +527,7 @@ export default function BookingPage() {
                     <div>
                       <label className="block text-sm font-medium text-[#a1a1aa] mb-4">Select a Date & Time *</label>
                       <div className="grid md:grid-cols-2 gap-6">
-                        <DatePicker selectedDate={selectedDate} onSelect={handleDateSelect} />
+                        <DatePicker selectedDate={selectedDate} selectedMonth={selectedMonth} selectedYear={selectedYear} onSelect={handleDateSelect} />
                         <div>
                           {selectedDate ? (
                             <div className="bg-[#0a0a0f] border border-[#1a1a25] rounded-2xl p-6 h-full">
