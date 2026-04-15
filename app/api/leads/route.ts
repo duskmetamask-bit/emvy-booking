@@ -113,14 +113,14 @@ function generatePromptsPDF(): Buffer {
 
   // Prompt pages
   let promptNum = 1
-  const allPrompts = PROMPTS.flatMap(cat => cat.prompts)
-  allPrompts.forEach((p, i) => {
+  PROMPTS.forEach(cat => {
+    cat.prompts.forEach((p) => {
     doc.addPage()
 
     doc.font('Helvetica-Bold')
     doc.fontSize(8)
     doc.fillColor('#10b981')
-    doc.text(`PROMPT ${p.n} — ${p.category}`)
+    doc.text(`PROMPT ${p.n} — ${cat.category}`)
     doc.moveDown(0.5)
 
     doc.font('Helvetica-Bold')
@@ -150,6 +150,7 @@ function generatePromptsPDF(): Buffer {
     doc.fillColor('#aaaaaa')
     doc.text(`EMVY — emvy.ai — Prompt ${p.n} of 30`, { align: 'right' })
     promptNum++
+    })
   })
 
   // Bonus prompts page
